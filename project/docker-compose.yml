@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  blog-service:
+    build:
+      context: ../blog-service
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    deploy:
+      mode: replicated
+      replicas: 1
+  authentication-service:
+    build:
+      context: ./../authentication-service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=postgres sslmode=disable timezone=UTC connect_timeout=5"
+  postgres:
+    image: 'postgres:14.2'
+    ports:
+      - "5432:5432"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    volumes:
+      - ./db-data/postgres/:/var/lib/postgresql/models/
+  frontend:
+    container_name: frontend
+    hostname: frontend
+    build:
+      context: ./../frontend
+    volumes:
+      - './../frontend:/var/www/frontend:rw'
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - 3000:3000
