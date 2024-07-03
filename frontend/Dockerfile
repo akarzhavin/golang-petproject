@@ -19,6 +19,6 @@ RUN chown -R node:node /var/www/frontend/
 COPY --chown=node:node . ./
 
 # start app
-CMD ["npm", "start", "--env-file", "/var/www/frontend/.env"]
+CMD ["npm", "start"]
 
 EXPOSE 3000

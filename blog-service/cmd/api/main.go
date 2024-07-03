@@ -15,7 +15,7 @@ import (
 )
 
 const webPort = "8080"
-const defaultDSN = "host=localhost port=5432 user=postgres password=password dbname=postgres sslmode=disable timezone=UTC connect_timeout=5"
+const defaultDSN = "host=localhost port=5432 user=postgresql password=password dbname=postgresql sslmode=disable timezone=UTC connect_timeout=5"
 
 var counts int64
 

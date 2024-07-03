@@ -10,6 +10,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    environment:
+      DSN: "host=postgresql port=5432 user=postgresql password=password dbname=postgresql sslmode=disable timezone=UTC connect_timeout=5"
   authentication-service:
     build:
       context: ./../authentication-service
@@ -20,27 +22,24 @@ services:
       mode: replicated
       replicas: 1
     environment:
-      DSN: "host=postgres port=5432 user=postgres password=password dbname=postgres sslmode=disable timezone=UTC connect_timeout=5"
-  postgres:
-    image: 'postgres:14.2'
+      DSN: "host=postgresql port=5432 user=postgresql password=password dbname=postgresql sslmode=disable timezone=UTC connect_timeout=5"
+  postgresql:
+    build:
+      context: ./../postgresql
+    hostname: postgresql
     ports:
       - "5432:5432"
     deploy:
       mode: replicated
       replicas: 1
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_USER: postgresql
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: users
-    volumes:
-      - ./db-data/postgres/:/var/lib/postgresql/models/
   frontend:
     container_name: frontend
     hostname: frontend
     build:
       context: ./../frontend
-    volumes:
-      - './../frontend:/var/www/frontend:rw'
     environment:
       - CHOKIDAR_USEPOLLING=true
     ports:
